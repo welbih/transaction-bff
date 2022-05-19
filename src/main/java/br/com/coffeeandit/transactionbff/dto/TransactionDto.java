@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
@@ -17,9 +20,12 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "uuid")
+@ToString
+@RedisHash(value = "TransactionDto", timeToLive = 300)
 public class TransactionDto {
 
     @Schema(description = "Código de identificaão de transação")
+    @Id
     private UUID uuid;
 
     @Schema(description = "Valor da transação")
@@ -35,4 +41,16 @@ public class TransactionDto {
     @NotNull(message = "Informar a conta de origem da transação")
     @Valid
     private Conta conta;
+
+    @Schema(description = "Beneficiário da transação")
+    @Valid
+    private BeneficiarioDto beneficiario;
+
+    @NotNull(message = "Informar o tipo da transação")
+    @Schema(description = "Tipo de transação")
+    private TipoTransacao tipoTransacao;
+
+    @Schema(description = "Situação da transação")
+    private SituacaoEnum situacao;
+
 }
